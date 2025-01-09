@@ -61,9 +61,15 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "sao_attachment" {
 
 
 # PEERING ATTACHMENTS
-
+# Create the intra-region Peering Attachment from Tokyo to London.
+# The peer_transit_gateway_id must reference a Transit Gateway from a different region,
+# and the peer_region must align with the region of the peer_transit_gateway_id.
+# tgw_tokyo_source_peering: peer_region = "eu-west-2" should match the region of the london-tgw.
+# 
+# This will create two peerings: one for Tokyo (Creator)
+# and one for London (Acceptor).
 # Tokyo VPC to London VPC
-resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_london_peering" {
+resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_source_peering" {
   transit_gateway_id = aws_ec2_transit_gateway.tokyo-tgw.id
   peer_transit_gateway_id = aws_ec2_transit_gateway.london-tgw.id # London Transit Gateway ID to Peer WITH
   peer_region = "eu-west-2"  # London region to Peer WITH
@@ -71,12 +77,73 @@ resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_london_peering"
 
   tags = {
     Name = "Tokyo London Peering Attachment"
+    Side = "Creator"
+  }
+}
+
+# Transit Gateway 2's peering request needs to be accepted.
+# So, we fetch the Peering Attachment that is created for the Gateway 2.
+data "aws_ec2_transit_gateway_peering_attachment" "london_accepter_peering_data" {
+  provider = aws.london
+  depends_on = [aws_ec2_transit_gateway_peering_attachment.tgw_tokyo_source_peering]
+  filter {
+    name   = "transit-gateway-id"
+    values = [aws_ec2_transit_gateway.london-tgw.id]
+  }
+}
+
+# Accept the Attachment Peering request.
+resource "aws_ec2_transit_gateway_peering_attachment_accepter" "london_accepter" {
+  provider = aws.london
+  transit_gateway_attachment_id = data.aws_ec2_transit_gateway_peering_attachment.london_accepter_peering_data.id
+  tags = {
+    Name = "terraform-london-tgw-peering-accepter"
+    Side = "Acceptor"
   }
 }
 
 
+
+# SAO PAULO TO TOKYO PEERING
+resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_sao_source_peering" {
+  # provider = aws.saopaulo
+  transit_gateway_id = aws_ec2_transit_gateway.tokyo-tgw.id
+  peer_transit_gateway_id = aws_ec2_transit_gateway.sao-tgw.id # Sao Paulo Transit Gateway ID to Peer WITH
+  peer_region = "sa-east-1"  # Sao Paulo region to Peer WITH  
+
+  tags = {
+    Name = "Tokyo Sao Peering Attachment"
+    Side = "Creator"
+  }
+}
+
+
+# Transit Gateway 2's peering request needs to be accepted.
+# So, we fetch the Peering Attachment that is created for the Gateway 3 - Sao Paulo.
+data "aws_ec2_transit_gateway_peering_attachment" "sao_accepter_peering_data" {
+  provider = aws.saopaulo
+  depends_on = [aws_ec2_transit_gateway_peering_attachment.tgw_tokyo_sao_source_peering]
+  filter {
+    name   = "transit-gateway-id"
+    values = [aws_ec2_transit_gateway.sao-tgw.id]
+  }
+}
+
+# Accept the Attachment Peering request.
+resource "aws_ec2_transit_gateway_peering_attachment_accepter" "sao_accepter" {
+  provider = aws.saopaulo
+  transit_gateway_attachment_id = data.aws_ec2_transit_gateway_peering_attachment.sao_accepter_peering_data.id
+  tags = {
+    Name = "terraform-sao-tgw-peering-accepter"
+    Side = "Acceptor"
+  }
+}
+
+
+/*
 # Tokyo VPC to Sao Paulo VPC
 resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_sao_peering" {
+  provider = aws.saopaulo  
   transit_gateway_id = aws_ec2_transit_gateway.tokyo-tgw.id
   peer_transit_gateway_id = aws_ec2_transit_gateway.sao-tgw.id # Sao Paulo Transit Gateway ID to Peer WITH
   peer_region = "sa-east-1"  # Sao Paulo region to Peer WITH
@@ -87,7 +154,7 @@ resource "aws_ec2_transit_gateway_peering_attachment" "tgw_tokyo_sao_peering" {
     Name = "Tokyo Sao Peering Attachment"
   }
 }
-
+*/
 
 
 ################################################################################################

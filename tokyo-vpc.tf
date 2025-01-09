@@ -1,7 +1,6 @@
 resource "aws_vpc" "TOKYO_VPC" {              # VPC ID: aws_vpc.TOKYO_VPC.id  
   cidr_block       = "10.240.0.0/16"
   
-
   tags = {
     Name = "TOKYO_VPC"
   }
@@ -13,8 +12,71 @@ resource "aws_subnet" "TOKYO_SUBNET" {
   availability_zone = "ap-northeast-1a"
   tags = {
     Name = "TOKYO_SUBNET"
+    Service = "application1"
+    Owner   = "Balactus"
+    Planet  = "Taa"
   }
 }
+
+
+resource "aws_subnet" "tokyo-public-ap-northeast-1a" {
+  vpc_id                  = aws_vpc.TOKYO_VPC.id
+  cidr_block              = "10.240.1.0/24"
+  availability_zone       = "ap-northeast-1a"
+  #map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "tokyo-public-ap-northeast-1a"
+    Service = "application1"
+    Owner   = "Balactus"
+    Planet  = "Taa"
+  }
+}
+
+
+resource "aws_subnet" "tokyo-public-ap-northeast-1c" {
+  vpc_id                  = aws_vpc.TOKYO_VPC.id
+  cidr_block              = "10.240.3.0/24"
+  availability_zone       = "ap-northeast-1c"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "tokyo-public-ap-northeast-1c"
+    Service = "application1"
+    Owner   = "Balactus"
+    Planet  = "Taa"
+  }
+}
+
+
+#these are for private
+resource "aws_subnet" "tokyo-private-ap-northeast-1a" {
+  vpc_id            = aws_vpc.TOKYO_VPC.id
+  cidr_block        = "10.240.11.0/24"
+  availability_zone = "ap-northeast-1a"
+
+  tags = {
+    Name    = "tokyo-private-ap-northeast-1a"
+    Service = "application1"
+    Owner   = "Balactus"
+    Planet  = "Taa"
+  }
+}
+
+
+resource "aws_subnet" "tokyo-private-ap-northeast-1c" {
+  vpc_id            = aws_vpc.TOKYO_VPC.id
+  cidr_block        = "10.240.13.0/24"
+  availability_zone = "ap-northeast-1c"
+
+  tags = {
+    Name    = "tokyo-private-ap-northeast-1c"
+    Service = "application1"
+    Owner   = "Balactus"
+    Planet  = "Taa"
+  }
+}
+
 
 resource "aws_internet_gateway" "TOKYO_IGW" {     # Internet Gateway ID: aws_internet_gateway.TOKYO_IGW.id
   vpc_id     = aws_vpc.TOKYO_VPC.id

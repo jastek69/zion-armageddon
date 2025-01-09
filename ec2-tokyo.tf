@@ -273,15 +273,3 @@ resource "aws_instance" "ec2-tokyo-443" {
     create_before_destroy = true
   }
 }
-
-
-
-
-# Output the public IP address of the instance (optional)
-output "tokyo_public_ip80" {
-  value = aws_instance.ec2-tokyo-80.public_ip
-}
-
-output "tokyo_public_ip443" {
-  value = aws_instance.ec2-tokyo-443.public_ip
-}

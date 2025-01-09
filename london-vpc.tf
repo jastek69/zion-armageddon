@@ -1,8 +1,6 @@
 resource "aws_vpc" "LONDON_VPC" {
-  provider = aws.london
-  
-  cidr_block       = "10.241.0.0/16"
-  
+  provider = aws.london  
+  cidr_block       = "10.241.0.0/16"  
 
   tags = {
     Name = "LONDON_VPC"
@@ -11,14 +9,81 @@ resource "aws_vpc" "LONDON_VPC" {
 
 resource "aws_subnet" "LONDON_SUBNET" {
   provider = aws.london
-  
   vpc_id     = aws_vpc.LONDON_VPC.id
   cidr_block = "10.241.0.0/24"
   availability_zone = "eu-west-2a"
   tags = {
     Name = "LONDON_SUBNET"
+    Service = "application1"
+    Owner   = "Blackneto"
+    Planet  = "Taa"
   }
 }
+
+
+resource "aws_subnet" "london-public-eu-west-2a" {
+  provider                = aws.london
+  vpc_id                  = aws_vpc.LONDON_VPC.id
+  cidr_block              = "10.241.1.0/24"
+  availability_zone       = "eu-west-2a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "london-public-eu-west-2a"
+    Service = "application1"
+    Owner   = "Blackneto"
+    Planet  = "Taa"
+  }
+}
+
+
+resource "aws_subnet" "london-public-eu-west-2b" {
+  provider                = aws.london
+  vpc_id                  = aws_vpc.LONDON_VPC.id
+  cidr_block              = "10.241.2.0/24"
+  availability_zone       = "eu-west-2b"
+  #map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "london-public-eu-west-2b"
+    Service = "application1"
+    Owner   = "Blackneto"
+    Planet  = "Taa"
+  }
+}
+
+
+#these are for private
+resource "aws_subnet" "london-private-eu-west-2a" {
+  provider          = aws.london
+  vpc_id            = aws_vpc.LONDON_VPC.id
+  cidr_block        = "10.241.11.0/24"
+  availability_zone = "eu-west-2a"
+
+  tags = {
+    Name    = "london-private-eu-west-2a"
+    Service = "application1"
+    Owner   = "Blackneto"
+    Planet  = "Taa"
+  }
+}
+
+
+resource "aws_subnet" "london-private-eu-west-2b" {
+  provider          = aws.london
+  vpc_id            = aws_vpc.LONDON_VPC.id
+  cidr_block        = "10.241.12.0/24"
+  availability_zone = "eu-west-2b"
+
+  tags = {
+    Name    = "london-private-eu-west-2b"
+    Service = "application1"
+    Owner   = "Blackneto"
+    Planet  = "Taa"
+  }
+}
+
+
 
 resource "aws_internet_gateway" "LONDON_IGW" {
   provider = aws.london
