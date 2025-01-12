@@ -84,10 +84,8 @@ resource "aws_subnet" "london-private-eu-west-2b" {
 }
 
 
-
 resource "aws_internet_gateway" "LONDON_IGW" {
-  provider = aws.london
-  
+  provider = aws.london  
   vpc_id     = aws_vpc.LONDON_VPC.id
 
   tags = {
@@ -131,3 +129,18 @@ resource "aws_route" "LONDON_to_sao" {
 
   depends_on = [aws_ec2_transit_gateway_vpc_attachment.london_attachment]
 }
+
+
+/*
+
+# Route to CA_VPC via Transit Gateway Attachment
+resource "aws_route" "TOKYO_to_california" {
+  provider               = aws.california
+  route_table_id         = aws_route_table.TOKYO_route_table.id
+  destination_cidr_block = "10.244.0.0/16"  # California CIDR block
+  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.tokyo_attachment.transit_gateway_id
+
+  depends_on = [aws_ec2_transit_gateway_vpc_attachment.tokyo_attachment]
+}
+
+*/

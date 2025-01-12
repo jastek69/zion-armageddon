@@ -1,10 +1,10 @@
 # Create a security group named 'customer-securitygrp' with ingress rules
-resource "aws_security_group" "ec2-london-sg80" {
-  provider = aws.london  
-  vpc_id = aws_vpc.LONDON_VPC.id
+resource "aws_security_group" "ec2-hongkong-sg80" {
+  provider = aws.hongkong
+  vpc_id = aws_vpc.HK_VPC.id
   /*
   tags = {
-    Name = "london-sg"
+    Name = "hk-sg"
   } 
   */
 
@@ -27,7 +27,7 @@ resource "aws_security_group" "ec2-london-sg80" {
   }
   
   tags = {
-    Name    = "ec2-london-sg80"
+    Name    = "ec2-hongkong-sg80"
     # Name: "${var.env_prefix}-sg-80"
     Service = "web-application"
     Owner   = "Balactus"
@@ -37,10 +37,9 @@ resource "aws_security_group" "ec2-london-sg80" {
 }
 
 
-
 /*
 #latest image  
-data "aws_ami" "latest-amazon-linux-image-london" {
+data "aws_ami" "latest-amazon-linux-image-hk" {
     most_recent = true
     owners = ["amazon"]
     filter {
@@ -55,14 +54,13 @@ data "aws_ami" "latest-amazon-linux-image-london" {
 */
 
 # Launch the EC2 instance Port 80
-resource "aws_instance" "ec2-london-80" {
-  provider = aws.london
-  
-  #ami = data.aws_ami.latest-amazon-linux-image-london.id
-  ami = "ami-0c76bd4bd302b30ec"
+resource "aws_instance" "ec2-hongkong-80" {
+  provider = aws.hongkong
+  # ami = data.aws_ami.latest-amazon-linux-image-hk.id
+  ami = "ami-08d17dd56120aa5b4"
 
   #instance_type = var.instance_type[0]
-  instance_type = "t2.micro"  # Adjust instance type as needed
+  instance_type = "t3.micro"  # Adjust instance type as needed
 
   # Enable auto-assign public IP (optional)
   associate_public_ip_address = true
@@ -104,7 +102,7 @@ resource "aws_instance" "ec2-london-80" {
     </head>
     <body>
     <div>
-    <h1>Balactus has Arrived in london</h1>
+    <h1>Balactus has Arrived in Hong Kong</h1>
     <h1>Keisha World has been consumed</h1>
     <p><b>Instance Name:</b> $(hostname -f) </p>
     <p><b>Instance Private Ip Address: </b> $local_ipv4</p>
@@ -122,17 +120,17 @@ resource "aws_instance" "ec2-london-80" {
 
   tags = {
      #Name: "${var.env_prefix}-server"
-     Name    = "ec2-london-80"
+     Name    = "ec2-hongkong-80"
      Service = "web-application1"
      Owner   = "Blackneto"
      Planet  = "Taa"
   }
 
   # Associate the instance with a security group
-  vpc_security_group_ids = [aws_security_group.ec2-london-sg80.id]
+  vpc_security_group_ids = [aws_security_group.ec2-hongkong-sg80.id]
 
   # Associate the instance with a subnet
-  subnet_id = aws_subnet.LONDON_SUBNET.id  
+  subnet_id = aws_subnet.HK_SUBNET.id
   
 
   lifecycle {

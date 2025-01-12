@@ -85,19 +85,14 @@ resource "aws_subnet" "sao-private-sa-east-1b" {
 }
 
 
-
-
-
 resource "aws_internet_gateway" "SAO_IGW" {
-  provider = aws.saopaulo
-  
+  provider   = aws.saopaulo  
   vpc_id     = aws_vpc.SAO_VPC.id
 
   tags = {
     Name = "SAO_IGW"
   }
 }
-
 
 
 # Sao Paulo Route Table
@@ -114,33 +109,6 @@ resource "aws_route_table" "SAO_route_table" {        # Route Table ID: aws_rout
     Name = "SAO_ROUTE"
   }
 }
-
-
-
-/*
-# Create a default route table for shared database VPC
-resource "aws_default_route_table" "SAO_ROUTE" {
-  provider = aws.saopaulo
-
-  default_route_table_id = aws_vpc.SAO_VPC.default_route_table_id
-
-  tags = {
-    Name = "SAO_ROUTE"
-  }
-}
-
-# Create a default route for shared database VPC
-resource "aws_route" "SAO_route" {
-  provider = aws.saopaulo
-  
-  route_table_id         = aws_default_route_table.SAO_ROUTE.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.SAO_IGW.id # Replace with actual internet gateway ID
-
-  depends_on = [aws_vpc.SAO_VPC]  # Ensure VPC is created before route
-}
-
-*/
 
 
 # Route to backend services VPC via Transit Gateway Attachment

@@ -17,13 +17,43 @@ provider "aws" {
 }
 
 
-# London - additional provider configuration for Asia Pacific region
+# Sao Paulo - additional provider configuration for Asia Pacific region
 # reference this as `aws.london`.
 provider "aws" {
   alias  = "saopaulo"
   region = "sa-east-1"
 }
 
+
+# California - additional provider configuration for Asia Pacific region
+# reference this as `aws.california`.
+provider "aws" {
+  alias  = "california"
+  region = "us-west-1"
+}
+
+# Hong Kong - additional provider configuration for Asia Pacific region
+# reference this as `aws.hongkong`.
+provider "aws" {
+  alias  = "hongkong"
+  region = "ap-east-1"
+}
+
+
+# New York (Virginia)- additional provider configuration for Asia Pacific region
+# reference this as `aws.ny`.
+provider "aws" {
+  alias  = "newyork"
+  region = "us-east-1"
+}
+
+
+# Australia - Additional provider configuration for Asia Pacific region
+# reference this as `aws.australia`.
+provider "aws" {
+  alias  = "australia"
+  region = "ap-southeast-2"
+}
 
 
 /*
@@ -43,50 +73,7 @@ locals {
 }
 */
 
-/***************************************************************************************************************/
-/* 
-# Australia - Additional provider configuration for Asia Pacific region
-# reference this as `aws.australia`.
-provider "aws" {
-  alias  = "australia"
-  region = "ap-southeast-2"
-}
 
-
-# Hong Kong - additional provider configuration for Asia Pacific region
-# reference this as `aws.hongkong`.
-provider "aws" {
-  alias  = "hongkong"
-  region = "ap-east-1"
-}
-
-
-
-
-
-# Sao Paulo - additional provider configuration for Asia Pacific region
-# reference this as `aws.sao`.
-provider "aws" {
-  alias  = "sao"
-  region = "sa-east-1"
-}
-
-
-# California - additional provider configuration for Asia Pacific region
-# reference this as `aws.ca`.
-provider "aws" {
-  alias  = "ca"
-  region = "us-west-1"
-}
-
-
-# New York (Virginia)- additional provider configuration for Asia Pacific region
-# reference this as `aws.ny`.
-provider "aws" {
-  alias  = "ny"
-  region = "us-east-1"
-}
-*****************************************************************************************************************/
 
 
 # Providers - terraform
